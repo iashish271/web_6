@@ -1,0 +1,1365 @@
+/* ==================== BASE RESET & VARIABLES ==================== */
+:root {
+    --gold: #FFD700;
+    --rose-gold: #F4C2C2;
+    --soft-pink: #FFB6C1;
+    --lavender: #E6E6FA;
+    --deep-blue: #0a0e27;
+    --cosmic-purple: #6B4EE6;
+    --star-white: #FFF8E7;
+    --glow-gold: rgba(255, 215, 0, 0.6);
+    --glow-pink: rgba(255, 182, 193, 0.5);
+    --glow-purple: rgba(107, 78, 230, 0.4);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Quicksand', sans-serif;
+    color: white;
+}
+
+/* ==================== MUSIC CONTROL ==================== */
+.music-control {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.music-control.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.music-control:hover {
+    background: rgba(255, 215, 0, 0.2);
+    border-color: var(--gold);
+    transform: scale(1.1);
+}
+
+.music-icon {
+    font-size: 22px;
+    color: var(--gold);
+}
+
+.music-waves {
+    position: absolute;
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+}
+
+.music-control.playing .music-icon {
+    display: none;
+}
+
+.music-control.playing .music-waves {
+    opacity: 1;
+}
+
+.music-waves span {
+    width: 2px;
+    height: 12px;
+    background: var(--gold);
+    border-radius: 1px;
+    animation: wave 0.8s ease-in-out infinite;
+}
+
+.music-waves span:nth-child(1) { animation-delay: 0s; }
+.music-waves span:nth-child(2) { animation-delay: 0.1s; }
+.music-waves span:nth-child(3) { animation-delay: 0.2s; }
+.music-waves span:nth-child(4) { animation-delay: 0.3s; }
+
+@keyframes wave {
+    0%, 100% { height: 4px; }
+    50% { height: 16px; }
+}
+
+/* ==================== START OVERLAY ==================== */
+.start-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, #0a0e27 0%, #000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    transition: opacity 1.5s ease, visibility 1.5s ease;
+}
+
+.start-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.start-content {
+    text-align: center;
+    position: relative;
+}
+
+.start-stars {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+    animation: starPulse 3s ease-in-out infinite;
+}
+
+@keyframes starPulse {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.5; }
+    50% { transform: translateX(-50%) scale(1.2); opacity: 1; }
+}
+
+.start-title {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin-bottom: 15px;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3);
+    animation: titleGlow 3s ease-in-out infinite;
+}
+
+.start-title .highlight {
+    color: var(--gold);
+    font-size: 3.5rem;
+}
+
+@keyframes titleGlow {
+    0%, 100% { text-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.3); }
+    50% { text-shadow: 0 0 50px rgba(255, 215, 0, 0.8), 0 0 100px rgba(255, 215, 0, 0.5), 0 0 150px rgba(255, 215, 0, 0.3); }
+}
+
+.start-subtitle {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    color: var(--rose-gold);
+    margin-bottom: 40px;
+    opacity: 0.8;
+    animation: subtitleFloat 3s ease-in-out infinite;
+}
+
+@keyframes subtitleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.start-btn {
+    position: relative;
+    padding: 18px 50px;
+    background: transparent;
+    border: 2px solid var(--gold);
+    border-radius: 50px;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.start-btn:hover {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+    transform: translateY(-3px);
+}
+
+.btn-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s ease;
+}
+
+.start-btn:hover .btn-glow {
+    width: 300px;
+    height: 300px;
+}
+
+/* ==================== CHAPTER BASE ==================== */
+.chapter {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.5s ease, visibility 1.5s ease;
+    overflow: hidden;
+}
+
+.chapter.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.chapter-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: bgFloat 20s ease-in-out infinite;
+}
+
+@keyframes bgFloat {
+    0%, 100% { transform: scale(1) translate(0, 0); }
+    25% { transform: scale(1.05) translate(-1%, -1%); }
+    50% { transform: scale(1.02) translate(1%, -0.5%); }
+    75% { transform: scale(1.04) translate(-0.5%, 1%); }
+}
+
+.chapter-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.chapter-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.chapter-content > * {
+    pointer-events: auto;
+}
+
+/* ==================== TEXT TYPING EFFECT ==================== */
+.text-container {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    text-align: center;
+    max-width: 800px;
+    padding: 0 20px;
+    margin: 15px 0;
+    min-height: 50px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.text-container.visible {
+    opacity: 1;
+}
+
+.text-container.typing::after {
+    content: '|';
+    animation: cursorBlink 0.7s infinite;
+    color: var(--gold);
+}
+
+@keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.tap-hint {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.3rem;
+    color: var(--rose-gold);
+    margin-top: 20px;
+    opacity: 0;
+    animation: hintPulse 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+/* ==================== CHAPTER 1: HEART STAR ==================== */
+.heart-star {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 1s ease;
+    margin-top: 30px;
+}
+
+.heart-star.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.heart-star:hover {
+    transform: scale(1.2);
+}
+
+.heart-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 20px rgba(255, 100, 150, 0.8));
+}
+
+.heart-path {
+    fill: url(#heartGradient);
+    animation: heartBeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    10% { transform: scale(1.1); }
+    20% { transform: scale(1); }
+    30% { transform: scale(1.1); }
+    40% { transform: scale(1); }
+}
+
+.heart-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(255, 100, 150, 0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+}
+
+/* ==================== CHAPTER 2: COSMIC EXPLOSION & STAR REVEAL ==================== */
+.nebula-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(107, 78, 230, 0.1) 0%, transparent 60%);
+    pointer-events: none;
+    animation: nebulaShift 10s ease-in-out infinite;
+}
+
+@keyframes nebulaShift {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+.cosmic-explosion {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, rgba(255, 100, 150, 0.4) 30%, rgba(107, 78, 230, 0.2) 60%, transparent 80%);
+    animation: explosionBurst 3s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes explosionBurst {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(2); opacity: 0.8; }
+    100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+}
+
+.star-reveal {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 0;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.star-reveal.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.talat-star {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+}
+
+.talat-name {
+    font-family: 'Cinzel', serif;
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+    text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 215, 0, 0.4), 0 0 120px rgba(255, 215, 0, 0.2);
+    animation: nameGlow 3s ease-in-out infinite;
+}
+
+@keyframes nameGlow {
+    0%, 100% { text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 215, 0, 0.4), 0 0 120px rgba(255, 215, 0, 0.2); }
+    50% { text-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 120px rgba(255, 215, 0, 0.6), 0 0 180px rgba(255, 215, 0, 0.3); }
+}
+
+.heart-symbol {
+    font-size: 3rem;
+    color: #ff6b9d;
+    display: block;
+    margin-top: -10px;
+    animation: heartPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes heartPulse {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.3); }
+    30% { transform: scale(1); }
+}
+
+.star-rays {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 215, 0, 0.1) 10deg, transparent 20deg, transparent 40deg, rgba(255, 215, 0, 0.08) 50deg, transparent 60deg, transparent 80deg, rgba(255, 215, 0, 0.06) 90deg, transparent 100deg, transparent 120deg, rgba(255, 215, 0, 0.1) 130deg, transparent 140deg, transparent 160deg, rgba(255, 215, 0, 0.08) 170deg, transparent 180deg, transparent 200deg, rgba(255, 215, 0, 0.06) 210deg, transparent 220deg, transparent 240deg, rgba(255, 215, 0, 0.1) 250deg, transparent 260deg, transparent 280deg, rgba(255, 215, 0, 0.08) 290deg, transparent 300deg, transparent 320deg, rgba(255, 215, 0, 0.06) 330deg, transparent 340deg);
+    border-radius: 50%;
+    animation: raysRotate 20s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes raysRotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.star-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, rgba(255, 100, 150, 0.1) 40%, transparent 70%);
+    border-radius: 50%;
+    animation: starGlowPulse 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes starGlowPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+}
+
+/* ==================== CHAPTER 3: FLOWERS & BUTTERFLIES ==================== */
+.flowers-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.cosmic-flower {
+    position: absolute;
+    font-size: 2rem;
+    animation: flowerBloom 4s ease-in-out forwards;
+    opacity: 0;
+    filter: drop-shadow(0 0 10px rgba(255, 182, 193, 0.6));
+}
+
+@keyframes flowerBloom {
+    0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+    30% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+    60% { transform: scale(1) rotate(0deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+}
+
+.butterflies-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 6;
+}
+
+.butterfly {
+    position: absolute;
+    font-size: 1.5rem;
+    animation: butterflyFly 8s ease-in-out infinite;
+    opacity: 0;
+}
+
+@keyframes butterflyFly {
+    0% { opacity: 0; transform: translate(0, 0) scale(0.5) rotate(0deg); }
+    10% { opacity: 1; transform: translate(20px, -30px) scale(1) rotate(10deg); }
+    25% { transform: translate(-10px, -60px) scale(1) rotate(-10deg); }
+    40% { transform: translate(30px, -90px) scale(0.8) rotate(15deg); }
+    55% { transform: translate(-20px, -120px) scale(1) rotate(-5deg); }
+    70% { transform: translate(15px, -150px) scale(0.9) rotate(10deg); }
+    85% { opacity: 1; transform: translate(-10px, -180px) scale(0.7) rotate(-15deg); }
+    100% { opacity: 0; transform: translate(20px, -200px) scale(0.5) rotate(0deg); }
+}
+
+.petals-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 4;
+    overflow: hidden;
+}
+
+.petal {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: linear-gradient(135deg, var(--soft-pink), var(--rose-gold));
+    border-radius: 50% 0 50% 50%;
+    animation: petalFall linear infinite;
+    opacity: 0.7;
+}
+
+@keyframes petalFall {
+    0% { transform: translateY(-10px) rotate(0deg) translateX(0); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(100vh) rotate(720deg) translateX(50px); opacity: 0; }
+}
+
+/* ==================== CHAPTER 4: CONSTELLATION ==================== */
+.constellation-container {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    height: 400px;
+    margin: 20px auto;
+}
+
+.constellation-star {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #fff 0%, var(--gold) 50%, transparent 70%);
+    border-radius: 50%;
+    cursor: pointer;
+    animation: starTwinkle 2s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.constellation-star:hover {
+    transform: scale(1.8);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.9);
+}
+
+@keyframes starTwinkle {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+}
+
+.constellation-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+    transform-origin: left center;
+    pointer-events: none;
+    animation: linePulse 3s ease-in-out infinite;
+}
+
+@keyframes linePulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.6; }
+}
+
+.memory-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease;
+}
+
+.memory-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.memory-content {
+    position: relative;
+    background: rgba(10, 14, 39, 0.95);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    transform: scale(0.8);
+    transition: transform 0.5s ease;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+}
+
+.memory-modal.active .memory-content {
+    transform: scale(1);
+}
+
+.memory-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.memory-close:hover {
+    transform: rotate(90deg);
+}
+
+.memory-star-icon {
+    font-size: 3rem;
+    color: var(--gold);
+    margin-bottom: 20px;
+    animation: starSpin 4s linear infinite;
+}
+
+@keyframes starSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.memory-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    color: var(--star-white);
+    line-height: 1.6;
+}
+
+.memory-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* ==================== CHAPTER 5: ORBIT SYSTEM ==================== */
+.orbit-system {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 20px auto;
+}
+
+.center-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, var(--gold) 0%, rgba(255, 215, 0, 0.3) 40%, transparent 70%);
+    border-radius: 50%;
+    animation: centerPulse 2s ease-in-out infinite;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+}
+
+@keyframes centerPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.3); }
+}
+
+.orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.orbit1 { width: 120px; height: 120px; animation: orbitRotate 6s linear infinite; }
+.orbit2 { width: 180px; height: 180px; animation: orbitRotate 10s linear infinite reverse; }
+.orbit3 { width: 260px; height: 260px; animation: orbitRotate 14s linear infinite; }
+.orbit4 { width: 340px; height: 340px; animation: orbitRotate 18s linear infinite reverse; }
+
+@keyframes orbitRotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.planet {
+    position: absolute;
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.planet1 { width: 20px; height: 20px; background: linear-gradient(135deg, #4ECDC4, #44A08D); top: -10px; left: 50%; transform: translateX(-50%); }
+.planet2 { width: 28px; height: 28px; background: linear-gradient(135deg, #F093FB, #F5576C); top: 50%; right: -14px; transform: translateY(-50%); }
+.planet3 { width: 18px; height: 18px; background: linear-gradient(135deg, #4FACFE, #00F2FE); bottom: -9px; left: 50%; transform: translateX(-50%); }
+.planet4 { width: 22px; height: 22px; background: linear-gradient(135deg, #43E97B, #38F9D7); top: 50%; left: -11px; transform: translateY(-50%); }
+
+.giant-planet {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, #FF6B6B, #FFE66D);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 60px rgba(255, 107, 107, 0.6), 0 0 120px rgba(255, 230, 109, 0.3);
+    transition: all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 10;
+}
+
+.giant-planet.visible {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.planet-number {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.celebration-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+#fireworksCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.birthday-reveal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+}
+
+.birthday-text {
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s ease;
+}
+
+.birthday-text.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#birthdayText1 {
+    font-size: 3.5rem;
+    color: var(--gold);
+    text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 215, 0, 0.4);
+    margin-bottom: 10px;
+}
+
+#birthdayText2 {
+    font-size: 2rem;
+    color: var(--rose-gold);
+    font-family: 'Dancing Script', cursive;
+}
+
+/* ==================== CHAPTER 6: ENVELOPE ==================== */
+.envelope-container {
+    position: relative;
+    margin: 30px 0;
+    perspective: 1000px;
+}
+
+.envelope {
+    position: relative;
+    width: 280px;
+    height: 180px;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease;
+}
+
+.envelope:hover {
+    transform: scale(1.05);
+}
+
+.envelope.open {
+    transform: rotateX(180deg);
+}
+
+.envelope-front, .envelope-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 10px;
+}
+
+.envelope-front {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 182, 193, 0.1));
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.envelope-front::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FFD700' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 182, 193, 0.15));
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    clip-path: polygon(0 0, 50% 100%, 100% 0);
+    transform-origin: top;
+    transition: transform 0.5s ease;
+    z-index: 3;
+}
+
+.envelope.open .envelope-flap {
+    transform: rotateX(180deg);
+}
+
+.envelope-body {
+    text-align: center;
+    z-index: 1;
+}
+
+.envelope-heart {
+    font-size: 3rem;
+    color: #ff6b9d;
+    animation: envelopeHeartBeat 1.5s ease-in-out infinite;
+}
+
+@keyframes envelopeHeartBeat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.2); }
+    30% { transform: scale(1); }
+}
+
+.envelope-stars {
+    font-size: 1rem;
+    color: var(--gold);
+    margin-top: 10px;
+    letter-spacing: 10px;
+}
+
+.envelope-back {
+    background: rgba(10, 14, 39, 0.98);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    transform: rotateX(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.letter {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 248, 231, 0.05);
+    border-radius: 5px;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.letter-content {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.1rem;
+    color: var(--star-white);
+    line-height: 1.8;
+    text-align: left;
+}
+
+.letter-content .letter-line {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: letterLineAppear 0.8s ease forwards;
+}
+
+@keyframes letterLineAppear {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.envelope-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 60%);
+    pointer-events: none;
+    animation: envelopeGlowPulse 3s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes envelopeGlowPulse {
+    0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.envelope-hint {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.2rem;
+    color: var(--rose-gold);
+    margin-top: 20px;
+    opacity: 0;
+    animation: hintPulse 2s ease-in-out infinite;
+}
+
+/* ==================== CHAPTER 7: AURORA & WISHES ==================== */
+.aurora-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, 
+        rgba(0, 255, 128, 0.05) 0%, 
+        rgba(0, 200, 255, 0.08) 30%, 
+        rgba(200, 0, 255, 0.05) 60%, 
+        transparent 100%);
+    animation: auroraWave 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes auroraWave {
+    0%, 100% { opacity: 0.3; transform: translateX(-5%); }
+    25% { opacity: 0.6; transform: translateX(5%); }
+    50% { opacity: 0.4; transform: translateX(-3%); }
+    75% { opacity: 0.7; transform: translateX(3%); }
+}
+
+.wishes-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.shooting-wish {
+    position: absolute;
+    white-space: nowrap;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.2rem;
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    animation: wishShoot linear forwards;
+}
+
+@keyframes wishShoot {
+    0% { transform: translateX(-100%) translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateX(100vw) translateY(-100px); opacity: 0; }
+}
+
+/* ==================== CHAPTER 8: GALAXY ROTATION ==================== */
+.rotating-galaxy {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(ellipse at center, 
+        rgba(255, 215, 0, 0.2) 0%, 
+        rgba(255, 100, 150, 0.15) 20%, 
+        rgba(107, 78, 230, 0.1) 40%, 
+        transparent 60%);
+    border-radius: 50%;
+    animation: galaxyRotate 30s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes galaxyRotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ==================== CHAPTER 9: COSMIC FINALE ==================== */
+.finale-zoom {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation: finaleZoomOut 8s ease-out forwards;
+}
+
+@keyframes finaleZoomOut {
+    0% { transform: scale(1.5); }
+    100% { transform: scale(1); }
+}
+
+.constellation-talat {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    opacity: 0;
+    transition: all 2s ease;
+}
+
+.constellation-talat.visible {
+    opacity: 1;
+}
+
+.finale-name {
+    font-family: 'Cinzel', serif;
+    font-size: 6rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+    letter-spacing: 15px;
+    text-shadow: 0 0 50px rgba(255, 215, 0, 0.9), 0 0 100px rgba(255, 215, 0, 0.5), 0 0 200px rgba(255, 215, 0, 0.3);
+    animation: finaleNameGlow 3s ease-in-out infinite;
+}
+
+@keyframes finaleNameGlow {
+    0%, 100% { text-shadow: 0 0 50px rgba(255, 215, 0, 0.9), 0 0 100px rgba(255, 215, 0, 0.5), 0 0 200px rgba(255, 215, 0, 0.3); }
+    50% { text-shadow: 0 0 80px rgba(255, 215, 0, 1), 0 0 150px rgba(255, 215, 0, 0.7), 0 0 300px rgba(255, 215, 0, 0.4); }
+}
+
+.finale-heart {
+    font-size: 4rem;
+    color: #ff6b9d;
+    display: block;
+    margin-top: -10px;
+    animation: finaleHeartPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes finaleHeartPulse {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.3); }
+    30% { transform: scale(1); }
+}
+
+.finale-messages {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+}
+
+.finale-text {
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    margin: 15px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1.5s ease;
+}
+
+.finale-text.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#finaleText1 {
+    font-size: 2.5rem;
+    color: var(--gold);
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+}
+
+#finaleText2 {
+    font-size: 1.5rem;
+    color: var(--star-white);
+    font-family: 'Quicksand', sans-serif;
+}
+
+#finaleText3 {
+    font-size: 1.8rem;
+    color: var(--rose-gold);
+    font-family: 'Dancing Script', cursive;
+}
+
+.floating-hearts-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.floating-heart {
+    position: absolute;
+    font-size: 1.5rem;
+    color: #ff6b9d;
+    animation: heartFloat linear infinite;
+    opacity: 0.7;
+}
+
+@keyframes heartFloat {
+    0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(-100px) scale(1.2) rotate(360deg); opacity: 0; }
+}
+
+/* ==================== PROGRESS & TRANSITIONS ==================== */
+.progress-bar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.progress-bar.visible {
+    opacity: 1;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--rose-gold));
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.chapter-indicator {
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.chapter-indicator.visible {
+    opacity: 1;
+}
+
+.transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+}
+
+.transition-overlay.active {
+    opacity: 1;
+}
+
+/* ==================== SPARKLE PARTICLES ==================== */
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sparkleAnim 2s ease-in-out infinite;
+}
+
+@keyframes sparkleAnim {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .start-title { font-size: 1.8rem; }
+    .start-title .highlight { font-size: 2.2rem; }
+    .text-container { font-size: 1.2rem; }
+    .talat-name { font-size: 3rem; }
+    .finale-name { font-size: 3.5rem; letter-spacing: 8px; }
+    #birthdayText1 { font-size: 2rem; }
+    .orbit-system { width: 280px; height: 280px; }
+    .envelope { width: 240px; height: 150px; }
+}
+
+/* ==================== SCROLL & CURSOR ==================== */
+body {
+    cursor: default;
+}
+
+.chapter {
+    cursor: pointer;
+}
+
+/* Particle canvas overlay for global effects */
+.particle-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+}
+
+/* Light ray effects */
+.light-ray {
+    position: absolute;
+    top: -50%;
+    width: 2px;
+    height: 200%;
+    background: linear-gradient(to bottom, transparent, rgba(255, 215, 0, 0.3), transparent);
+    animation: raySweep 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes raySweep {
+    0%, 100% { opacity: 0; transform: rotate(-15deg) translateX(0); }
+    50% { opacity: 1; transform: rotate(-15deg) translateX(100px); }
+}
+
+/* Confetti */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    animation: confettiFall linear forwards;
+    pointer-events: none;
+}
+
+@keyframes confettiFall {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Meteor shower */
+.meteor {
+    position: absolute;
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.8), transparent);
+    animation: meteorFall linear forwards;
+    pointer-events: none;
+}
+
+@keyframes meteorFall {
+    0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 1; }
+    100% { transform: translateX(-300px) translateY(300px) rotate(-45deg); opacity: 0; }
+}
